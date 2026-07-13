@@ -115,6 +115,9 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  padding-bottom: 0.15em;
+  padding-right: 0.1em;
+  display: inline-block;
 }
 
 @utility gold-glow {
