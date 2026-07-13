@@ -50,7 +50,7 @@ writeFileSync(
   wrapperPath,
   `import handler from "./server.js";
 
-export default async function vercelHandler(req, res) {
+async function vercelHandler(req, res) {
   const proto = req.headers["x-forwarded-proto"] || "https";
   const host  = req.headers["x-forwarded-host"] || req.headers.host || "localhost";
   const url   = new URL(req.url, proto + "://" + host);
@@ -76,6 +76,8 @@ export default async function vercelHandler(req, res) {
   response.headers.forEach((v, k) => res.setHeader(k, v));
   res.end(Buffer.from(await response.arrayBuffer()));
 }
+
+export default vercelHandler;
 `
 );
 
