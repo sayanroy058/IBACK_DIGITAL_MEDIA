@@ -82,16 +82,13 @@ export default async function vercelHandler(req, res) {
 console.log("Bundling server with esbuild…");
 await build({
   entryPoints: [wrapperPath],
-  outfile: join(funcDir, "index.mjs"),
+  outfile: join(funcDir, "index.js"),
   bundle: true,
   platform: "node",
-  format: "esm",
+  format: "cjs",
   target: "node20",
-  // Keep dynamic imports as-is (TanStack Start uses them internally)
   splitting: false,
-  // Don't externalise anything — bake all node_modules in
   packages: "bundle",
-  // Silence warnings about dynamic requires in some packages
   logLevel: "warning",
   define: {
     "process.env.NODE_ENV": JSON.stringify("production"),
@@ -106,7 +103,7 @@ writeFileSync(
   JSON.stringify(
     {
       runtime: "nodejs20.x",
-      handler: "index.mjs",
+      handler: "index.js",
       launcherType: "Nodejs",
     },
     null,
