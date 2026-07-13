@@ -3,7 +3,7 @@
  * Vercel's Build Output API format (.vercel/output/).
  *
  * dist/client/  → .vercel/output/static/
- * dist/server/  → .vercel/output/functions/index.func/
+ * dist/server/  → bundled via esbuild → .vercel/output/functions/index.func/
  */
 
 import {
@@ -16,6 +16,7 @@ import {
   existsSync,
 } from "node:fs";
 import { join } from "node:path";
+import { build } from "esbuild";
 
 function copyDir(src, dest) {
   mkdirSync(dest, { recursive: true });
@@ -39,15 +40,14 @@ if (existsSync(".vercel/output")) {
 console.log("Copying static assets…");
 copyDir("dist/client", ".vercel/output/static");
 
-// 2. Server files
-console.log("Copying server bundle…");
+// 2. Bundle the server entry + all node_modules into a single file
 const funcDir = ".vercel/output/functions/index.func";
 mkdirSync(funcDir, { recursive: true });
-copyDir("dist/server", funcDir);
 
-// 3. Serverless function entry — adapts the Web fetch handler to Node req/res
+// Write a thin wrapper that adapts the Web fetch handler to Vercel req/res
+const wrapperPath = "dist/server/_vercel_entry.mjs";
 writeFileSync(
-  join(funcDir, "entry.mjs"),
+  wrapperPath,
   `import handler from "./server.js";
 
 export default async function vercelHandler(req, res) {
@@ -79,13 +79,34 @@ export default async function vercelHandler(req, res) {
 `
 );
 
-// 4. Function config
+console.log("Bundling server with esbuild…");
+await build({
+  entryPoints: [wrapperPath],
+  outfile: join(funcDir, "index.mjs"),
+  bundle: true,
+  platform: "node",
+  format: "esm",
+  target: "node20",
+  // Keep dynamic imports as-is (TanStack Start uses them internally)
+  splitting: false,
+  // Don't externalise anything — bake all node_modules in
+  packages: "bundle",
+  // Silence warnings about dynamic requires in some packages
+  logLevel: "warning",
+  define: {
+    "process.env.NODE_ENV": JSON.stringify("production"),
+  },
+});
+
+console.log("✓ Server bundle created");
+
+// 3. Function config
 writeFileSync(
   join(funcDir, ".vc-config.json"),
   JSON.stringify(
     {
       runtime: "nodejs20.x",
-      handler: "entry.mjs",
+      handler: "index.mjs",
       launcherType: "Nodejs",
     },
     null,
@@ -93,7 +114,7 @@ writeFileSync(
   )
 );
 
-// 5. Vercel output config — serve static files first, fallback to SSR function
+// 4. Vercel output config — serve static files first, fallback to SSR function
 writeFileSync(
   ".vercel/output/config.json",
   JSON.stringify(
