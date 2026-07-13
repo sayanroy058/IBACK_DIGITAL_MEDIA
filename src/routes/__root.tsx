@@ -86,8 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "IBACK Digital Media — Where Vision Meets Digital Excellence" },
       { name: "twitter:description", content: "IBACK Digital Media is a premium digital marketing & technology agency in Sharjah, UAE. Branding, web, ads, SEO and creative built to dominate." },
-      { property: "og:image", content: "https://id-preview--ce0b05a9-716a-4258-8e4e-287628d47a66.lovable.app/og.jpg" },
-      { name: "twitter:image", content: "https://id-preview--ce0b05a9-716a-4258-8e4e-287628d47a66.lovable.app/og.jpg" },
+
     ],
     links: [
       { rel: "stylesheet", href: appCss },

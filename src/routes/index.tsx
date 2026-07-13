@@ -38,7 +38,7 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { property: "og:image", content: "https://id-preview--ce0b05a9-716a-4258-8e4e-287628d47a66.lovable.app/og.jpg" },
+
     ],
   }),
 });
