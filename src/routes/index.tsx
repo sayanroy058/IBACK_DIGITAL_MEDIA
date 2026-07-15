@@ -703,7 +703,30 @@ function Contact() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              alert("Thanks — we'll be in touch within one business day.");
+              const form = e.currentTarget;
+              const data = new FormData(form);
+              const get = (k: string) => String(data.get(k) ?? "").trim();
+              const name = get("name");
+              const email = get("email");
+              const company = get("company") || "—";
+              const budget = get("budget") || "—";
+              const message = get("message");
+
+              const lines = [
+                "New Project Inquiry — IBACK Digital Media",
+                "",
+                `Name: ${name}`,
+                `Email: ${email}`,
+                `Company: ${company}`,
+                `Budget (USD): ${budget}`,
+                "",
+                "Project details:",
+                message,
+              ];
+              const text = encodeURIComponent(lines.join("\n"));
+              const botimNumber = "0551957769";
+              window.open(`https://botim.me/${botimNumber}?text=${text}`, "_blank", "noopener,noreferrer");
+              form.reset();
             }}
             className="glass-strong relative overflow-hidden rounded-3xl p-8 lg:col-span-7 md:p-12"
           >
