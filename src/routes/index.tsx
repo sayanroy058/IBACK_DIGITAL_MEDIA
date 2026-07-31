@@ -26,6 +26,10 @@ import {
   MapPin,
   MessageCircle,
   ChevronDown,
+  Smartphone,
+  BrainCircuit,
+  Database,
+  Blocks,
 } from "lucide-react";
 
 import heroImg from "@/assets/hero.jpg";
@@ -359,6 +363,10 @@ const services = [
   { icon: Code2, name: "Web Development", cat: "Tech" },
   { icon: Sparkles, name: "Brand Identity", cat: "Design" },
   { icon: Server, name: "Web Hosting", cat: "Infra" },
+  { icon: Smartphone, name: "App Development", cat: "Tech" },
+  { icon: BrainCircuit, name: "AI Development / Automation", cat: "Tech" },
+  { icon: Database, name: "SaaS / CRM & Other", cat: "Tech" },
+  { icon: Blocks, name: "Blockchain Development", cat: "Tech" },
 ];
 
 function Services() {
