@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
@@ -26,6 +26,7 @@ import {
   MapPin,
   MessageCircle,
   ChevronDown,
+  X,
   Smartphone,
   BrainCircuit,
   Blocks,
@@ -353,21 +354,165 @@ function About() {
 
 /* ---------- Services ---------- */
 const services = [
-  { icon: Megaphone, name: "Social Media Management", cat: "Marketing" },
-  { icon: TrendingUp, name: "Digital Marketing", cat: "Marketing" },
-  { icon: Globe, name: "Domain Registration", cat: "Infra" },
-  { icon: Search, name: "SEO Optimization", cat: "Marketing" },
-  { icon: Target, name: "Google & Meta Ads", cat: "Performance" },
-  { icon: Layout, name: "Website Design", cat: "Design" },
-  { icon: Code2, name: "Web Development", cat: "Tech" },
-  { icon: Sparkles, name: "Brand Identity", cat: "Design" },
-  { icon: Server, name: "Web Hosting", cat: "Infra" },
-  { icon: Smartphone, name: "App Development", cat: "Tech" },
-  { icon: BrainCircuit, name: "AI Development / SaaS / CRM & Others", cat: "Tech" },
-  { icon: Blocks, name: "Blockchain Development", cat: "Tech" },
+  {
+    icon: Megaphone,
+    name: "Social Media Management",
+    cat: "Marketing",
+    desc: "End-to-end management of your social presence across Instagram, TikTok, LinkedIn, X and beyond. We handle content planning, scheduling, community engagement and reporting — keeping your brand active, consistent and growing.",
+    points: ["Content calendars & scheduling", "Community management", "Monthly performance reporting"],
+  },
+  {
+    icon: TrendingUp,
+    name: "Digital Marketing",
+    cat: "Marketing",
+    desc: "Full-funnel digital marketing that turns attention into revenue. From strategy to execution, we build campaigns across search, social and display engineered to hit your growth targets.",
+    points: ["Funnel strategy & positioning", "Cross-channel campaigns", "Conversion tracking & analytics"],
+  },
+  {
+    icon: Globe,
+    name: "Domain Registration",
+    cat: "Infra",
+    desc: "Secure the right domain for your brand. We help you find, register and manage domains with full DNS control, privacy protection and renewals handled for you.",
+    points: ["Domain search & registration", "DNS & privacy management", "Auto-renewals & reminders"],
+  },
+  {
+    icon: Search,
+    name: "SEO Optimization",
+    cat: "Marketing",
+    desc: "Technical and content-led SEO that improves visibility on Google. We audit, optimise and build authority so your pages rank for the searches that matter to your business.",
+    points: ["Technical & on-page SEO", "Keyword & content strategy", "Link-building & authority"],
+  },
+  {
+    icon: Target,
+    name: "Google & Meta Ads",
+    cat: "Performance",
+    desc: "Performance advertising on Google, YouTube, Meta and Instagram. We structure accounts, write creative, and optimise relentlessly to lower your cost per acquisition.",
+    points: ["Account setup & structure", "Creative & copywriting", "Continuous A/B optimisation"],
+  },
+  {
+    icon: Layout,
+    name: "Website Design",
+    cat: "Design",
+    desc: "Conversion-focused websites that look as good as they perform. We design distinctive, responsive interfaces built around your customer's journey — no templates.",
+    points: ["UX & wireframing", "High-fidelity UI design", "Responsive across all devices"],
+  },
+  {
+    icon: Code2,
+    name: "Web Development",
+    cat: "Tech",
+    desc: "Fast, accessible and technically flawless builds. From marketing sites to complex web apps, we engineer frontends and backends that scale with your business.",
+    points: ["Modern frameworks (React/Next)", "API & backend development", "Performance & SEO baked in"],
+  },
+  {
+    icon: Sparkles,
+    name: "Brand Identity",
+    cat: "Design",
+    desc: "Distinctive visual systems built to convert. We craft logos, colour, type and guidelines that make your brand instantly recognisable and impossible to copy.",
+    points: ["Logo & visual identity", "Brand guidelines", "Collateral & assets"],
+  },
+  {
+    icon: Server,
+    name: "Web Hosting",
+    cat: "Infra",
+    desc: "Reliable, fast hosting with full management. We handle setup, SSL, backups and uptime so your site stays live and speedy without you lifting a finger.",
+    points: ["Managed cloud hosting", "SSL & security hardening", "Daily backups & monitoring"],
+  },
+  {
+    icon: Smartphone,
+    name: "App Development",
+    cat: "Tech",
+    desc: "Native and cross-platform mobile apps engineered for iOS and Android. From MVP to launch, we design, build and ship apps your users love to open.",
+    points: ["iOS & Android (React Native/Flutter)", "Backend & API integration", "App store launch & support"],
+  },
+  {
+    icon: BrainCircuit,
+    name: "AI Development / SaaS / CRM & Others",
+    cat: "Tech",
+    desc: "Custom AI, SaaS platforms and CRM systems tailored to your operations. We build intelligent workflows, dashboards and automation that save hours and unlock new capabilities.",
+    points: ["AI agents & automation", "Custom SaaS platforms", "CRM & workflow integrations"],
+  },
+  {
+    icon: Blocks,
+    name: "Blockchain Development",
+    cat: "Tech",
+    desc: "Secure, production-grade blockchain solutions — from smart contracts to Web3 integrations. We help you launch tokens, dApps and on-chain products the right way.",
+    points: ["Smart contract development", "dApps & Web3 integrations", "Audit-ready secure code"],
+  },
 ];
 
+function ServiceModal({ service, onClose }: { service: (typeof services)[number] | null; onClose: () => void }) {
+  useEffect(() => {
+    if (!service) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [service, onClose]);
+
+  return (
+    <AnimatePresence>
+      {service && (() => {
+        const Icon = service.icon;
+        return (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+            onClick={onClose}
+          >
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.97 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl glass-strong p-8 md:p-10"
+            >
+              <button
+                onClick={onClose}
+                aria-label="Close"
+                className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-muted-foreground transition-all hover:border-[var(--gold)] hover:text-[var(--gold)]"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[var(--gold)]/30 bg-[var(--gold)]/5">
+                <Icon className="h-6 w-6 text-[var(--gold)]" />
+              </div>
+              <div className="mt-3 text-[10px] uppercase tracking-[0.25em] text-[var(--gold)]">{service.cat}</div>
+              <h3 className="mt-2 font-display text-2xl font-medium leading-tight md:text-3xl">{service.name}</h3>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">{service.desc}</p>
+              <ul className="mt-6 space-y-2.5">
+                {service.points.map((p) => (
+                  <li key={p} className="flex items-center gap-3 text-sm text-foreground/90">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--gold)]" />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="#contact"
+                onClick={onClose}
+                className="group mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--gold)] px-6 py-3 text-xs font-medium uppercase tracking-[0.15em] text-background transition-all hover:gold-glow"
+              >
+                Start this project
+                <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:rotate-45" />
+              </a>
+            </motion.div>
+          </motion.div>
+        );
+      })()}
+    </AnimatePresence>
+  );
+}
+
 function Services() {
+  const [active, setActive] = useState<(typeof services)[number] | null>(null);
   return (
     <section id="services" className="relative py-32">
       <div className="pointer-events-none absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 50% 0%, rgba(240,120,24,0.15), transparent 50%)" }} />
@@ -393,14 +538,18 @@ function Services() {
                   <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">{s.cat}</span>
                 </div>
                 <h3 className="relative mt-6 font-display text-xl font-medium leading-tight">{s.name}</h3>
-                <div className="relative mt-4 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors group-hover:text-[var(--gold)]">
+                <button
+                  onClick={() => setActive(s)}
+                  className="relative mt-4 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors group-hover:text-[var(--gold)]"
+                >
                   Learn more <ArrowUpRight className="h-3 w-3" />
-                </div>
+                </button>
               </motion.div>
             );
           })}
         </div>
       </div>
+      <ServiceModal service={active} onClose={() => setActive(null)} />
     </section>
   );
 }
