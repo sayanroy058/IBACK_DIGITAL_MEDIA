@@ -364,8 +364,7 @@ const services = [
   { icon: Sparkles, name: "Brand Identity", cat: "Design" },
   { icon: Server, name: "Web Hosting", cat: "Infra" },
   { icon: Smartphone, name: "App Development", cat: "Tech" },
-  { icon: BrainCircuit, name: "AI Development / Automation", cat: "Tech" },
-  { icon: Database, name: "SaaS / CRM & Other", cat: "Tech" },
+  { icon: BrainCircuit, name: "AI Development / SaaS / CRM & Others", cat: "Tech" },
   { icon: Blocks, name: "Blockchain Development", cat: "Tech" },
 ];
 
