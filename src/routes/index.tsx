@@ -28,7 +28,6 @@ import {
   ChevronDown,
   Smartphone,
   BrainCircuit,
-  Database,
   Blocks,
 } from "lucide-react";
 
